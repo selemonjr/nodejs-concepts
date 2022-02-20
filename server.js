@@ -36,23 +36,13 @@ const app = express();
 // const errorHandler = require("./middleware/errorHandler");
 const product = require("./routes/productsRoute");
 const redirect = require("./routes/redirect");
-const employeesData = require("./routes/api/employees")
+const employeesData = require("./routes/api/employees");
+const corsOptions = require("./config/corsOptions");
 const PORT = process.env.PORT || 3500;
-// // White list
-// const whiteList = ['https://www.google.com', 'http://localhost:3500'] // => Only these urls can access the api
-// const coreOptions = {
-//     origin: (origin,callback) => {
-//         if(whiteList.indexOf(origin) !== -1 || !origin) {
-//             callback(null,true)
-//         } else {
-//             callback(new Error('Not allowed by Cors'))
-//         }
-//     },
-//     optionSuccessStatus:200
-// };
-// app.use(cors(coreOptions))
-// // if you are creating a public api using this will be fine
-// app.use(cors());
+app.use(cors(corsOptions))
+// if you are creating a public api using this will be fine
+app.use(cors());
+app.use(express.json())
 // app.use(errorHandler)
 
 // Custom Middleware
