@@ -31,39 +31,47 @@
 
 const express = require("express");
 const cors = require("cors");
-const products = require("./products");
-const errorHandler = require("./middleware/errorHandler");
+// const products = require("./products");
 const app = express();
+// const errorHandler = require("./middleware/errorHandler");
+const product = require("./routes/productsRoute");
+const redirect = require("./routes/redirect");
+const employeesData = require("./routes/api/employees")
 const PORT = process.env.PORT || 3500;
-// White list
-const whiteList = ['https://www.google.com',, 'http://localhost:3500'] // => Only these urls can access the api
-const coreOptions = {
-    origin: (origin,callback) => {
-        if(whiteList.indexOf(origin) !== -1 || !origin) {
-            callback(null,true)
-        } else {
-            callback(new Error('Not allowed by Cors'))
-        }
-    },
-    optionSuccessStatus:200
-};
-app.use(cors(coreOptions))
-// if you are creating a public api using this will be fine
-app.use(cors());
-app.use(errorHandler)
+// // White list
+// const whiteList = ['https://www.google.com', 'http://localhost:3500'] // => Only these urls can access the api
+// const coreOptions = {
+//     origin: (origin,callback) => {
+//         if(whiteList.indexOf(origin) !== -1 || !origin) {
+//             callback(null,true)
+//         } else {
+//             callback(new Error('Not allowed by Cors'))
+//         }
+//     },
+//     optionSuccessStatus:200
+// };
+// app.use(cors(coreOptions))
+// // if you are creating a public api using this will be fine
+// app.use(cors());
+// app.use(errorHandler)
 
 // Custom Middleware
-app.use((req,res,next) => {
-    console.log(req.method,req.path);
-    next()
-})
+// app.use((req,res,next) => {
+//     console.log(req.method,req.path);
+//     next()
+// })
+
+// Routing
+app.use("/products", product)
+app.use("/products", redirect)
+app.use("/employees", employeesData)
 
 app.get("/", (req,res) => {
     res.send("Hello Express")
 });
-app.get("/products", (req,res) => {
-    res.send(products)
-});
+// app.get("/products", (req,res) => {
+//     res.send(products)
+// });
 
 //Page not found
 
@@ -73,9 +81,9 @@ app.get('/*', (req,res) => {
 
 //redirect
 
-app.get("/item", (req,res) => {
-    res.redirect(301,"/products")
-})
+// app.get("/item", (req,res) => {
+//     res.redirect(301,"/products")
+// })
 
 app.listen(PORT, () => {
     console.log(`Server listening at PORT ${PORT}`)
