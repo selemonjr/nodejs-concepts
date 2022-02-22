@@ -28,7 +28,7 @@
 
 // // serve static files
 // app.use(express.static(path.join(__dirname, '/public')))
-
+require("dotenv").config()
 const express = require("express");
 const cors = require("cors");
 // const products = require("./products");
@@ -45,6 +45,11 @@ const corsOptions = require("./config/corsOptions");
 const logOut = require("./routes/logout")
 const verifyJWT = require("./middleware/verifyJWT");
 const cookieParser = require('cookie-parser');
+const mongoose = require("mongoose");
+const connectDB = require("./config/dbConn");
+// Connect to mongoDb;
+connectDB();
+
 const PORT = process.env.PORT || 3500;
 app.use(cors(corsOptions))
 // if you are creating a public api using this will be fine
@@ -93,10 +98,12 @@ app.get('/*', (req,res) => {
 // app.get("/item", (req,res) => {
 //     res.redirect(301,"/products")
 // })
-
-app.listen(PORT, () => {
-    console.log(`Server listening at PORT ${PORT}`)
-})
+mongoose.connection.once("open", () => {
+    console.log("Connected to mongodb");
+    app.listen(PORT, () => {
+        console.log(`Server listening at PORT ${PORT}`)
+    })
+});
 
 // add listener for the log event
 // myEmitter.on('log', (msg) => logEvent(msg))
