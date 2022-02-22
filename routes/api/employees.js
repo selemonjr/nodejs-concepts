@@ -4,7 +4,7 @@ const employeesController = require("../../controllers/employeesController");
 // const data = {};
 // data.employees = require("../../model/data.json");
 router.route('/')
-.get(employeesController.getAllEmployees)
+.get( employeesController.getAllEmployees) // We are protecting the employees route
 .post(employeesController.createNewEmployee)
 .put(employeesController.updateEmployee)
 .delete(employeesController.deleteEmployee);

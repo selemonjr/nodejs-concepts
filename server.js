@@ -39,12 +39,22 @@ const redirect = require("./routes/redirect");
 const employeesData = require("./routes/api/employees");
 const registerNewUser = require("./routes/register");
 const handleLogin = require("./routes/login");
+const credentials = require('./middleware/credentials');
 const corsOptions = require("./config/corsOptions");
+// const refreshToken = require("./routes/refresh");
+const logOut = require("./routes/logout")
+const verifyJWT = require("./middleware/verifyJWT");
+const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 3500;
 app.use(cors(corsOptions))
 // if you are creating a public api using this will be fine
 app.use(cors());
-app.use(express.json())
+
+//builtin middleware for json
+app.use(express.json());
+
+// middleware for cookies
+app.use(cookieParser());
 // app.use(errorHandler)
 
 // Custom Middleware
@@ -54,15 +64,20 @@ app.use(express.json())
 // })
 
 // Routing
-app.use("/products", product)
-app.use("/products", redirect)
-app.use("/employees", employeesData)
-app.use("/register", registerNewUser);
-app.use("/login", handleLogin);
-
+// Flows like a waterfall
+// Any route after / below the verifyJWT will require authentication
 app.get("/", (req,res) => {
     res.send("Hello Express")
 });
+app.use("/register", registerNewUser);
+app.use("/login", handleLogin);
+app.use("/products", product);
+app.use("/products", redirect);
+app.use('/refresh', require('./routes/refresh'));
+app.use("/logOut", logOut)
+app.use(verifyJWT);
+app.use("/employees", employeesData)
+
 // app.get("/products", (req,res) => {
 //     res.send(products)
 // });
