@@ -37,6 +37,8 @@ const app = express();
 const product = require("./routes/productsRoute");
 const redirect = require("./routes/redirect");
 const employeesData = require("./routes/api/employees");
+const registerNewUser = require("./routes/register");
+const handleLogin = require("./routes/login");
 const corsOptions = require("./config/corsOptions");
 const PORT = process.env.PORT || 3500;
 app.use(cors(corsOptions))
@@ -55,6 +57,8 @@ app.use(express.json())
 app.use("/products", product)
 app.use("/products", redirect)
 app.use("/employees", employeesData)
+app.use("/register", registerNewUser);
+app.use("/login", handleLogin);
 
 app.get("/", (req,res) => {
     res.send("Hello Express")
