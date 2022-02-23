@@ -1,9 +1,4 @@
-const usersDB = {
-    users: require("../model/users.json"),
-    setUsers: function(data) {this.users = data}
-}
-const fsPromises = require('fs').promises;
-const path = require('path');
+const User = require("../model/User")
 const bcrypt = require('bcrypt');
 
 const handleNewUser = async (req,res) => {
@@ -13,21 +8,19 @@ const handleNewUser = async (req,res) => {
     };
 
     // check for duplicate usernames in the database
-    const duplicate = usersDB.users.find(person => person.username === user);
+    const duplicate = await User.findOne({username: user}).exec()
     if(duplicate) {
         return res.sendStatus(409); //Conflict
     };
     try {
         //encrypt the password using bcrypt
         const hashedPassword = await bcrypt.hash(password, 10)// 10 salt rounds for hashing your passwords
-        // store the new users
-        const newUser = {
+        //create and store the new users
+        const result = await User.create({
             "username": user, 
-            "roles": {"User":2001},
-            "password": hashedPassword};
-        usersDB.setUsers([...usersDB.users, newUser]);
-        await fsPromises.writeFile(path.join(__dirname, '..', 'model', 'users.json'), JSON.stringify(usersDB.users));
-        console.log(usersDB.users);
+            "password": hashedPassword
+        });
+        console.log(result)
         res.status(201).json({"success": `New User ${user} created!`})
 
     } catch(err) {
